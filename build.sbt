@@ -45,7 +45,12 @@ wartremoverErrors ++= Seq(
 )
 
 enablePlugins(GitVersioning)
+enablePlugins(GitHubPagesPlugin)
 enablePlugins(SiteScaladocPlugin)
+
+gitHubPagesOrgName := "michaelmior"
+gitHubPagesRepoName := "jsonoid-generator"
+gitHubPagesSiteDir := baseDirectory.value / "target/site"
 
 git.remoteRepo := "git@github.com:michaelmior/jsonoid-generator.git"
 git.useGitDescribe := true
