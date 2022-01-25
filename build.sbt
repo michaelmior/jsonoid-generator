@@ -33,7 +33,6 @@ wartremoverErrors ++= Seq(
   Wart.ExplicitImplicitTypes,
   Wart.FinalCaseClass,
   Wart.MutableDataStructures,
-  Wart.NonUnitStatements,
   Wart.Null,
   Wart.Option2Iterable,
   Wart.PublicInference,
