@@ -5,7 +5,7 @@ ThisBuild / versionScheme     := Some("early-semver")
 ThisBuild / organization      := "edu.rit.cs"
 ThisBuild / organizationName  := "Rochester Institute of Technology"
 ThisBuild / githubOwner       := "michaelmior"
-ThisBuild / githubRepository  := "jsonoid-web"
+ThisBuild / githubRepository  := "jsonoid-generator"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
