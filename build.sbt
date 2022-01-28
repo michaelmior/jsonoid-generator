@@ -54,3 +54,10 @@ gitHubPagesSiteDir := baseDirectory.value / "target/site"
 
 git.remoteRepo := "git@github.com:michaelmior/jsonoid-generator.git"
 git.useGitDescribe := true
+
+assembly / assemblyMergeStrategy := {
+  case "module-info.class" => MergeStrategy.discard
+  case x =>
+    val oldStrategy = (assembly / assemblyMergeStrategy).value
+    oldStrategy(x)
+}

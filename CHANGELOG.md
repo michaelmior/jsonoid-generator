@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated jsonoid-discovery dependency to v0.5.0
 
+### Fixed
+- Fix assembly task
+
 ## [0.0.1]
 ### Added
 - Initial release with basic working generator
