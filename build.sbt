@@ -22,7 +22,9 @@ lazy val root = (project in file("."))
     scalacOptions ++= Seq(
       "-feature",
       "-Xfatal-warnings",
-    )
+    ),
+    buildInfoKeys := Seq[BuildInfoKey](version),
+    buildInfoPackage := "edu.rit.cs.mmior.jsonoid.generator"
   )
 
 wartremoverErrors ++= Seq(
@@ -44,6 +46,7 @@ wartremoverErrors ++= Seq(
   Wart.While,
 )
 
+enablePlugins(BuildInfoPlugin)
 enablePlugins(GitVersioning)
 enablePlugins(GitHubPagesPlugin)
 enablePlugins(SiteScaladocPlugin)
@@ -61,3 +64,8 @@ assembly / assemblyMergeStrategy := {
     val oldStrategy = (assembly / assemblyMergeStrategy).value
     oldStrategy(x)
 }
+assembly / assemblyJarName       := s"jsonoid-generator-${version.value}.jar"
+assembly / mainClass             := Some("edu.rit.cs.mmior.jsonoid.generator.GeneratorCLI")
+
+import sbtassembly.AssemblyPlugin.defaultUniversalScript
+assemblyPrependShellScript := Some(defaultUniversalScript(shebang = false))
