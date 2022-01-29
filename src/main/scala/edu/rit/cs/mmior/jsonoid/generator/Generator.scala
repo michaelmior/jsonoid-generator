@@ -5,11 +5,12 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   BooleanSchema,
   EnumSchema,
   IntegerSchema,
+  JsonSchema,
   NullSchema,
   NumberSchema,
   ObjectSchema,
   ProductSchema,
-  JsonSchema
+  StringSchema
 }
 
 import org.json4s._
@@ -29,6 +30,7 @@ object Generator {
       case s: NullSchema    => NullGenerator.generate(s)
       case s: ObjectSchema  => ObjectGenerator.generate(s)
       case s: ProductSchema => ProductGenerator.generate(s)
+      case s: StringSchema  => StringGenerator.generate(s)
     }
   }
 }
