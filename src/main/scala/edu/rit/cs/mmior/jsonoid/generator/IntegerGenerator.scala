@@ -12,19 +12,19 @@ import org.json4s._
 object IntegerGenerator extends Generator[IntegerSchema, JInt] {
   def generate(schema: IntegerSchema): JInt = {
     val multiple = schema.properties
-      .get[MultipleOfProperty]
-      .multiple
+      .getOrNone[MultipleOfProperty]
+      .flatMap(_.multiple)
       .map(_.intValue)
       .getOrElse(1)
 
     val minValue = schema.properties
-      .get[MinIntValueProperty]
-      .minIntValue
+      .getOrNone[MinIntValueProperty]
+      .flatMap(_.minIntValue)
       .map(_.intValue)
       .getOrElse(0)
     val maxValue = schema.properties
-      .get[MaxIntValueProperty]
-      .maxIntValue
+      .getOrNone[MaxIntValueProperty]
+      .flatMap(_.maxIntValue)
       .map(_.intValue)
       .getOrElse((1000 + (minValue / multiple).ceil.toInt) * multiple)
 

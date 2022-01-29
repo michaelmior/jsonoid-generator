@@ -12,21 +12,24 @@ import org.json4s._
 
 object StringGenerator extends Generator[StringSchema, JString] {
   def generate(schema: StringSchema): JString = {
-    val patternProp = schema.properties.get[PatternProperty]
+    val patternProp =
+      schema.properties.getOrNone[PatternProperty].getOrElse(PatternProperty())
     val prefix = patternProp.prefix.getOrElse("")
     val suffix = patternProp.suffix.getOrElse("")
 
     // Get the minimum length but ignore the prefix and suffix
     val minLength = (schema.properties
-      .get[MinLengthProperty]
-      .minLength
-      .getOrElse(0) - prefix.length - suffix.length).max(0)
-    val maxLength = schema.properties
-      .get[MaxLengthProperty]
-      .maxLength
-      .getOrElse(minLength + 10)
+        .getOrNone[MinLengthProperty]
+        .flatMap(_.minLength)
+        .getOrElse(0) - prefix.length - suffix.length).max(0)
 
-    val formats = schema.properties.get[FormatProperty].formats
+    val maxLength = schema.properties
+        .getOrNone[MaxLengthProperty]
+        .flatMap(_.maxLength)
+        .getOrElse(minLength + 10)
+
+    val formats =
+      schema.properties.getOrNone[FormatProperty].map(_.formats).getOrElse(Map.empty)
 
     if (formats.isEmpty) {
       // Pick a length for the random part of the string
