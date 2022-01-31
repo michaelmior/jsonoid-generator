@@ -19,17 +19,20 @@ object StringGenerator extends Generator[StringSchema, JString] {
 
     // Get the minimum length but ignore the prefix and suffix
     val minLength = (schema.properties
-        .getOrNone[MinLengthProperty]
-        .flatMap(_.minLength)
-        .getOrElse(0) - prefix.length - suffix.length).max(0)
+      .getOrNone[MinLengthProperty]
+      .flatMap(_.minLength)
+      .getOrElse(0) - prefix.length - suffix.length).max(0)
 
     val maxLength = schema.properties
-        .getOrNone[MaxLengthProperty]
-        .flatMap(_.maxLength)
-        .getOrElse(minLength + 10)
+      .getOrNone[MaxLengthProperty]
+      .flatMap(_.maxLength)
+      .getOrElse(minLength + 10)
 
     val formats =
-      schema.properties.getOrNone[FormatProperty].map(_.formats).getOrElse(Map.empty)
+      schema.properties
+        .getOrNone[FormatProperty]
+        .map(_.formats)
+        .getOrElse(Map.empty)
 
     if (formats.isEmpty) {
       // Pick a length for the random part of the string

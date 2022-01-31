@@ -17,15 +17,18 @@ object ArrayGenerator extends Generator[ArraySchema, JArray] {
     itemType match {
       case Left(itemSchema) =>
         val minItems = schema.properties
-          .get[MinItemsProperty]
-          .minItems
+          .getOrNone[MinItemsProperty]
+          .flatMap(_.minItems)
           .getOrElse(0)
         val maxItems = schema.properties
-          .get[MaxItemsProperty]
-          .maxItems
+          .getOrNone[MaxItemsProperty]
+          .flatMap(_.maxItems)
           .getOrElse(minItems + 10)
         val numItems = minItems + util.Random.nextInt(maxItems - minItems + 1)
-        val uniqueProp = schema.properties.get[UniqueProperty]
+        val uniqueProp =
+          schema.properties
+            .getOrNone[UniqueProperty]
+            .getOrElse(UniqueProperty())
 
         if (uniqueProp.unique && !uniqueProp.unary) {
           throw new UnsupportedOperationException(
