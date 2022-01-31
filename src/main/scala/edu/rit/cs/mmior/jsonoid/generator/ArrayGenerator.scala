@@ -25,12 +25,13 @@ object ArrayGenerator extends Generator[ArraySchema, JArray] {
           .flatMap(_.maxItems)
           .getOrElse(minItems + 10)
         val numItems = minItems + util.Random.nextInt(maxItems - minItems + 1)
-        val uniqueProp =
+        val isUnique =
           schema.properties
             .getOrNone[UniqueProperty]
-            .getOrElse(UniqueProperty())
+            .map(p => p.unique && !p.unary)
+            .getOrElse(false)
 
-        if (uniqueProp.unique && !uniqueProp.unary) {
+        if (isUnique) {
           throw new UnsupportedOperationException(
             "unique in arrays not supported"
           )
