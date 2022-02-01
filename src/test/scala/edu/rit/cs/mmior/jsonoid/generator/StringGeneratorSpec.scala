@@ -25,8 +25,6 @@ class StringGeneratorSpec extends UnitSpec {
   private val schemaRegex = "[0-9A-Z]+".r
   private val regexStringSchema = StringSchema({
     val props = SchemaProperties.empty[String]
-    props.add(MinLengthProperty(Some(3)))
-    props.add(MaxLengthProperty(Some(10)))
     props.add(StaticPatternProperty(schemaRegex))
     props
   })
@@ -46,7 +44,6 @@ class StringGeneratorSpec extends UnitSpec {
   it should "generate a valid string" in {
     val str = StringGenerator.generate(regexStringSchema).extract[String]
     str should fullyMatch regex schemaRegex
-    str.length should (be >= 3 and be <= 10)
   }
 
   it should "generate a date" in {

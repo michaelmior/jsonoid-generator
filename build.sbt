@@ -17,7 +17,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       javaFaker,
       jsonoid,
-      xeger,
+      rgxgen,
 
       scalaTest % Test,
     ),

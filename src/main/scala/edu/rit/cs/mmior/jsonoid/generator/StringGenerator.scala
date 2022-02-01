@@ -9,12 +9,14 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   StringSchema
 }
 
+import com.github.curiousoddman.rgxgen.RgxGen
+import com.github.curiousoddman.rgxgen.config.{RgxGenOption,RgxGenProperties}
 import com.github.javafaker.Faker
 import java.text.SimpleDateFormat
-import nl.flotsam.xeger.Xeger
 import org.json4s._
 
 object StringGenerator extends Generator[StringSchema, JString] {
+  @SuppressWarnings(Array("org.wartremover.warts.Equals"))
   def generate(schema: StringSchema): JString = {
     val patternProp =
       schema.properties.getOrNone[PatternProperty].getOrElse(PatternProperty())
@@ -49,15 +51,15 @@ object StringGenerator extends Generator[StringSchema, JString] {
     if (formats.isEmpty) {
       regex match {
         case Some(regexObj) =>
-          val generator = new Xeger(
-            regexObj.toString.replaceAll("(^\\^)|(\\$$)", "")
-          )
-          if (maxLength.isEmpty) {
+          val genProps = new RgxGenProperties()
+          RgxGenOption.INFINITE_PATTERN_REPETITION.setInProperties(genProps, 5)
+          val generator = new RgxGen(regexObj.toString)
+          generator.setProperties(genProps)
+
+          if (minLength == 0 && maxLength.isEmpty) {
             JString(generator.generate())
           } else {
-            JString(
-              generator.generate(minLength, maxLength.getOrElse(1e100.toInt))
-            )
+            throw new UnsupportedOperationException("regexes not supported with length constraints")
           }
         case None =>
           // Pick a length for the random part of the string
