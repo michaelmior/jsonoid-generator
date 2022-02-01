@@ -33,4 +33,16 @@ class ArrayGeneratorSpec extends UnitSpec {
     arr.arr.length should be <= 2
     all(arr.arr) shouldBe a[JBool]
   }
+
+  it should "generate an array of unique elements" in {
+    val props = SchemaProperties.empty[List[JsonSchema[_]]]
+    props.add(ItemTypeProperty(Left(BooleanSchema())))
+    props.add(MinItemsProperty(Some(2)))
+    props.add(MaxItemsProperty(Some(2)))
+    props.add(UniqueProperty(true, false))
+    val uniqueArraySchema = ArraySchema(props)
+
+    val arr = ArrayGenerator.generate(uniqueArraySchema)
+    arr.arr should contain theSameElementsAs List(JBool(true), JBool(false))
+  }
 }

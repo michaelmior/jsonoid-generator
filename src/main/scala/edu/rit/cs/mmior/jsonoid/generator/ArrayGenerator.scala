@@ -31,17 +31,18 @@ object ArrayGenerator extends Generator[ArraySchema, JArray] {
             .map(p => p.unique && !p.unary)
             .getOrElse(false)
 
-        if (isUnique) {
-          throw new UnsupportedOperationException(
-            "unique in arrays not supported"
-          )
-        }
-
-        JArray(
+        JArray(if (isUnique) {
+          Stream
+            .from(1)
+            .map(_ => Generator.generateFromSchema(itemSchema))
+            .distinct
+            .take(numItems)
+            .toList
+        } else {
           (1 to numItems)
             .map(_ => Generator.generateFromSchema(itemSchema))
             .toList
-        )
+        })
       case Right(schemas) =>
         JArray(schemas.map(s => Generator.generateFromSchema(s)))
     }

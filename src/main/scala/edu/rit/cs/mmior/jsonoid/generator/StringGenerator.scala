@@ -10,7 +10,7 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 }
 
 import com.github.curiousoddman.rgxgen.RgxGen
-import com.github.curiousoddman.rgxgen.config.{RgxGenOption,RgxGenProperties}
+import com.github.curiousoddman.rgxgen.config.{RgxGenOption, RgxGenProperties}
 import com.github.javafaker.Faker
 import java.text.SimpleDateFormat
 import org.json4s._
@@ -59,7 +59,9 @@ object StringGenerator extends Generator[StringSchema, JString] {
           if (minLength == 0 && maxLength.isEmpty) {
             JString(generator.generate())
           } else {
-            throw new UnsupportedOperationException("regexes not supported with length constraints")
+            throw new UnsupportedOperationException(
+              "regexes not supported with length constraints"
+            )
           }
         case None =>
           // Pick a length for the random part of the string
