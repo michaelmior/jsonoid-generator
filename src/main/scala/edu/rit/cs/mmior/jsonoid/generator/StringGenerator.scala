@@ -5,9 +5,11 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   MaxLengthProperty,
   MinLengthProperty,
   PatternProperty,
+  StaticPatternProperty,
   StringSchema
 }
 
+import nl.flotsam.xeger.Xeger
 import org.json4s._
 
 object StringGenerator extends Generator[StringSchema, JString] {
@@ -16,6 +18,15 @@ object StringGenerator extends Generator[StringSchema, JString] {
       schema.properties.getOrNone[PatternProperty].getOrElse(PatternProperty())
     val prefix = patternProp.prefix.getOrElse("")
     val suffix = patternProp.suffix.getOrElse("")
+
+    val regex =
+      schema.properties.getOrNone[StaticPatternProperty].map(_.regex)
+
+    if ((!prefix.isEmpty || !suffix.isEmpty) && !regex.isEmpty) {
+      throw new UnsupportedOperationException(
+        "can't generate strings with prefix/suffix and regex"
+      )
+    }
 
     // Get the minimum length but ignore the prefix and suffix
     val minLength = (schema.properties
@@ -35,11 +46,17 @@ object StringGenerator extends Generator[StringSchema, JString] {
         .getOrElse(Map.empty)
 
     if (formats.isEmpty) {
-      // Pick a length for the random part of the string
-      // and build the string including prefix and suffix
-      val length = minLength + util.Random.nextInt(maxLength - minLength + 1)
-      val randString = util.Random.alphanumeric.take(length).mkString
-      JString(prefix + randString + suffix)
+      regex match {
+        case Some(regexObj) =>
+          val generator = new Xeger(regexObj.toString)
+          JString(generator.generate(minLength, maxLength))
+        case None =>
+          // Pick a length for the random part of the string
+          // and build the string including prefix and suffix
+          val length = minLength + util.Random.nextInt(maxLength - minLength + 1)
+          val randString = util.Random.alphanumeric.take(length).mkString
+          JString(prefix + randString + suffix)
+      }
     } else {
       throw new UnsupportedOperationException("format is not supported")
     }

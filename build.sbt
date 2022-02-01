@@ -16,6 +16,7 @@ lazy val root = (project in file("."))
     resolvers += "jitpack" at "https://jitpack.io",
     libraryDependencies ++= Seq(
       jsonoid,
+      xeger,
 
       scalaTest % Test,
     ),
