@@ -39,7 +39,6 @@ object StringGenerator extends Generator[StringSchema, JString] {
     val maxLength = schema.properties
       .getOrNone[MaxLengthProperty]
       .flatMap(_.maxLength)
-      .getOrElse(minLength + 10)
 
     val formats =
       schema.properties
@@ -50,13 +49,20 @@ object StringGenerator extends Generator[StringSchema, JString] {
     if (formats.isEmpty) {
       regex match {
         case Some(regexObj) =>
-          val generator = new Xeger(regexObj.toString)
-          JString(generator.generate(minLength, maxLength))
+          val generator = new Xeger(regexObj.toString.replaceAll("(^\\^)|(\\$$)", ""))
+          if (maxLength.isEmpty) {
+            JString(generator.generate())
+          } else {
+            JString(
+              generator.generate(minLength, maxLength.getOrElse(1e100.toInt))
+            )
+          }
         case None =>
           // Pick a length for the random part of the string
           // and build the string including prefix and suffix
+          val maxLengthInt = maxLength.getOrElse(minLength + 10)
           val length =
-            minLength + util.Random.nextInt(maxLength - minLength + 1)
+            minLength + util.Random.nextInt(maxLengthInt - minLength + 1)
           val randString = util.Random.alphanumeric.take(length).mkString
           JString(prefix + randString + suffix)
       }
