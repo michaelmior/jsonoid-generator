@@ -49,7 +49,9 @@ object StringGenerator extends Generator[StringSchema, JString] {
     if (formats.isEmpty) {
       regex match {
         case Some(regexObj) =>
-          val generator = new Xeger(regexObj.toString.replaceAll("(^\\^)|(\\$$)", ""))
+          val generator = new Xeger(
+            regexObj.toString.replaceAll("(^\\^)|(\\$$)", "")
+          )
           if (maxLength.isEmpty) {
             JString(generator.generate())
           } else {

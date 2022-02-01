@@ -82,14 +82,14 @@ class StringGeneratorSpec extends UnitSpec {
   it should "generate a host" in {
     val hostSchema = schemaWithFormat("host")
     val str = StringGenerator.generate(hostSchema).extract[String]
-    https://stackoverflow.com/a/26093611/123695
+    // https://stackoverflow.com/a/26093611/123695
     str should fullyMatch regex """^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$""".r
   }
 
   it should "generate an email" in {
     val emailSchema = schemaWithFormat("email")
     val str = StringGenerator.generate(emailSchema).extract[String]
-    https://stackoverflow.com/a/32445372/123695
+    // https://stackoverflow.com/a/32445372/123695
     str should fullyMatch regex """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
   }
 
