@@ -6,12 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Basic CLI interface
+- Generation of data based on regexes and format properties
+
 ### Changed
-- Updated jsonoid-discovery dependency to v0.5.3
+- Updated jsonoid-discovery dependency to v0.5.4
 
 ### Fixed
 - Fix assembly task
 - Handle cases of missing properties
+- Strings are now properly generated
 
 ## [0.0.1]
 ### Added
