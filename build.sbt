@@ -15,6 +15,7 @@ lazy val root = (project in file("."))
     resolvers += Resolver.githubPackages("michaelmior"),
     resolvers += "jitpack" at "https://jitpack.io",
     libraryDependencies ++= Seq(
+      javaFaker,
       jsonoid,
       xeger,
 

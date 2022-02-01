@@ -9,6 +9,8 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   StringSchema
 }
 
+import com.github.javafaker.Faker
+import java.text.SimpleDateFormat
 import nl.flotsam.xeger.Xeger
 import org.json4s._
 
@@ -53,12 +55,34 @@ object StringGenerator extends Generator[StringSchema, JString] {
         case None =>
           // Pick a length for the random part of the string
           // and build the string including prefix and suffix
-          val length = minLength + util.Random.nextInt(maxLength - minLength + 1)
+          val length =
+            minLength + util.Random.nextInt(maxLength - minLength + 1)
           val randString = util.Random.alphanumeric.take(length).mkString
           JString(prefix + randString + suffix)
       }
     } else {
-      throw new UnsupportedOperationException("format is not supported")
+      @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
+      val format = formats.maxBy(_._2)._1
+      val faker = new Faker()
+      JString(format match {
+        case "date"                => randomDate("yyyy-MM-dd", faker)
+        case "date-time"           => randomDate("yyyy-MM-dd'T'HH:mm:ss+00:00", faker)
+        case "email" | "idn-email" => faker.internet.emailAddress
+        case "host" | "idn-host"   => faker.internet.domainName
+        case "ipv4"                => faker.internet.ipV4Address
+        case "ipv6"                => faker.internet.ipV6Address
+        case "time"                => randomDate("HH:mm:ss+00:00", faker)
+        case "uuid"                => faker.internet.uuid
+        case "uri" | "iri" | "uri-reference" | "iri-reference" =>
+          "https://" + faker.internet.url
+        case _ =>
+          throw new UnsupportedOperationException("unsupported format")
+      })
     }
+  }
+
+  private def randomDate(format: String, faker: Faker): String = {
+    val formatObj = new SimpleDateFormat(format)
+    formatObj.format(faker.date.birthday)
   }
 }
