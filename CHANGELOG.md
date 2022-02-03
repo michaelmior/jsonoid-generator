@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support unique element generation in arrays
 
 ### Changed
-- Updated jsonoid-discovery dependency to v0.5.4
+- Updated jsonoid-discovery dependency to v0.6.3
 
 ### Fixed
 - Fix assembly task
