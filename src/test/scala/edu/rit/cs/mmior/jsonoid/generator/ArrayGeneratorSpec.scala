@@ -45,4 +45,15 @@ class ArrayGeneratorSpec extends UnitSpec {
     val arr = ArrayGenerator.generate(uniqueArraySchema)
     arr.arr should contain theSameElementsAs List(JBool(true), JBool(false))
   }
+
+  it should "generate an array of unique enum values" in {
+    val options: Set[JValue] = Set(JString("foo"))
+    val enumSchema = EnumSchema(options)
+    val enumArraySchema = ArraySchema(List(enumSchema))
+    enumArraySchema.properties.add(UniqueProperty(true, false))
+
+    val arr = ArrayGenerator.generate(enumArraySchema, Some(10))
+    arr.arr.length should be <= 1
+  }
+
 }

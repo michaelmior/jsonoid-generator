@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix assembly task
 - Handle cases of missing properties
 - Strings are now properly generated
+- Stop infinite loop with unique arrays of enums
 
 ## [0.0.1]
 ### Added

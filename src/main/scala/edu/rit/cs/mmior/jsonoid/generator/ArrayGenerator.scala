@@ -2,6 +2,8 @@ package edu.rit.cs.mmior.jsonoid.generator
 
 import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   ArraySchema,
+  EnumSchema,
+  EnumValuesProperty,
   MaxItemsProperty,
   MinItemsProperty,
   ItemTypeProperty,
@@ -11,7 +13,9 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 import org.json4s._
 
 object ArrayGenerator extends Generator[ArraySchema, JArray] {
-  def generate(schema: ArraySchema): JArray = {
+  def generate(schema: ArraySchema): JArray = generate(schema, None)
+
+  def generate(schema: ArraySchema, items: Option[Int]): JArray = {
     val itemType = schema.properties.get[ItemTypeProperty].itemType
 
     itemType match {
@@ -24,12 +28,28 @@ object ArrayGenerator extends Generator[ArraySchema, JArray] {
           .getOrNone[MaxItemsProperty]
           .flatMap(_.maxItems)
           .getOrElse(minItems + 10)
-        val numItems = minItems + util.Random.nextInt(maxItems - minItems + 1)
+        val randItems = items.getOrElse(
+          minItems + util.Random.nextInt(maxItems - minItems + 1)
+        )
         val isUnique =
           schema.properties
             .getOrNone[UniqueProperty]
             .map(p => p.unique && !p.unary)
             .getOrElse(false)
+
+        // Make sure we don't try to generate too many things for EnumSchema
+        val numItems = if (isUnique && itemSchema.isInstanceOf[EnumSchema]) {
+          randItems.min(
+            itemSchema
+              .asInstanceOf[EnumSchema]
+              .properties
+              .get[EnumValuesProperty]
+              .values
+              .size
+          )
+        } else {
+          randItems
+        }
 
         JArray(if (isUnique) {
           Stream
