@@ -1,6 +1,9 @@
 package edu.rit.cs.mmior.jsonoid.generator
 
+import scala.util.Random
+
 import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
+  AnySchema,
   ArraySchema,
   BooleanSchema,
   EnumSchema,
@@ -20,6 +23,14 @@ trait Generator[S, T] {
 }
 
 object Generator {
+  val AnyGenerators: List[Function0[JValue]] = List(
+    () => BooleanGenerator.generate(BooleanSchema()),
+    () => IntegerGenerator.generate(IntegerSchema()),
+    () => NullGenerator.generate(NullSchema()),
+    () => NumberGenerator.generate(NumberSchema()),
+    () => StringGenerator.generate(StringSchema())
+  )
+
   def generateFromSchema(schema: JsonSchema[_]): JValue = {
     schema match {
       case s: ArraySchema   => ArrayGenerator.generate(s)
@@ -31,6 +42,8 @@ object Generator {
       case s: ObjectSchema  => ObjectGenerator.generate(s)
       case s: ProductSchema => ProductGenerator.generate(s)
       case s: StringSchema  => StringGenerator.generate(s)
+      case s: AnySchema =>
+        AnyGenerators(Random.nextInt(AnyGenerators.size))()
     }
   }
 }
