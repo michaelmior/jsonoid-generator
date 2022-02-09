@@ -9,14 +9,15 @@ class NumberGeneratorSpec extends UnitSpec {
   behavior of "NumberGenerator"
 
   private val numberSchema =
-    NumberSchema(1.0).merge(NumberSchema(5.0)).asInstanceOf[NumberSchema]
+    NumberSchema(1.0).merge(NumberSchema(5.5)).asInstanceOf[NumberSchema]
 
   it should "generate a number in range" in {
     val cp = new Checkpoint()
 
     val num = NumberGenerator.generate(numberSchema).num.toDouble
     cp { num should be >= 1.0 }
-    cp { num should be <= 5.0 }
+    cp { num should be <= 5.5 }
+    cp { (num % 0.5) shouldBe 0 }
 
     cp.reportAll()
   }

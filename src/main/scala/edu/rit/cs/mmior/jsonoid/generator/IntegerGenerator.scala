@@ -29,7 +29,7 @@ object IntegerGenerator extends Generator[IntegerSchema, JInt] {
       .getOrElse((1000 + (minValue / multiple).ceil.toInt) * multiple)
 
     // Get the possible range of multiples
-    val range = (maxValue / multiple.floor) - (minValue / multiple).ceil
+    val range = (maxValue / multiple).floor - (minValue / multiple).ceil
 
     // Find the smallest value in range which meets the necessary multiple
     val smallest = ((minValue / multiple).ceil * multiple).toInt
