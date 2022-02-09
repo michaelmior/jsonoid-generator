@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generate values without specified type
 
 ### Changed
-- Updated jsonoid-discovery dependency to v0.6.3
+- Updated jsonoid-discovery dependency to v0.7.0
 
 ### Fixed
 - Fix assembly task

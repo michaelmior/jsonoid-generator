@@ -3,7 +3,7 @@ package edu.rit.cs.mmior.jsonoid.generator
 import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   MaxIntValueProperty,
   MinIntValueProperty,
-  MultipleOfProperty,
+  IntMultipleOfProperty,
   IntegerSchema
 }
 
@@ -12,7 +12,7 @@ import org.json4s._
 object IntegerGenerator extends Generator[IntegerSchema, JInt] {
   def generate(schema: IntegerSchema): JInt = {
     val multiple = schema.properties
-      .getOrNone[MultipleOfProperty]
+      .getOrNone[IntMultipleOfProperty]
       .flatMap(_.multiple)
       .map(_.intValue)
       .getOrElse(1)
