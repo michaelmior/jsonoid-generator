@@ -4,9 +4,12 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   DependenciesProperty,
   ObjectSchema,
   ObjectTypesProperty,
+  PatternTypesProperty,
   RequiredProperty
 }
 
+import com.github.curiousoddman.rgxgen.RgxGen
+import com.github.curiousoddman.rgxgen.config.{RgxGenOption, RgxGenProperties}
 import org.json4s._
 
 object ObjectGenerator extends Generator[ObjectSchema, JObject] {
@@ -20,10 +23,33 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
     val chosenKeys =
       required ++ notRequired.filter(_ => util.Random.nextBoolean)
 
+    val patternTypes = schema.properties
+      .getOrNone[PatternTypesProperty]
+      .map(_.patternTypes)
+      .getOrElse(Map.empty)
+    val patternPropCount = if (patternTypes.isEmpty) {
+      0
+    } else {
+      util.Random.nextInt(10)
+    }
+    val patternProps = if (patternPropCount > 0) {
+      (1 to patternPropCount).map { _ =>
+        val prop = patternTypes.toSeq(util.Random.nextInt(patternTypes.size))
+        val genProps = new RgxGenProperties()
+        RgxGenOption.INFINITE_PATTERN_REPETITION.setInProperties(genProps, 5)
+        val generator = new RgxGen(prop._1.toString)
+        generator.setProperties(genProps)
+
+        (generator.generate(), Generator.generateFromSchema(prop._2))
+      }.toList
+    } else {
+      List()
+    }
+
     JObject(
       chosenKeys
         .map(k => (k, Generator.generateFromSchema(objectTypes(k))))
-        .toList
+        .toList ++ patternProps
     )
   }
 }

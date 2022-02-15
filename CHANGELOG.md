@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generate values without specified type
 - Support `multipleOf` for `number` type
 - Supports schemas with references
+- Support `patternProperties`
 
 ### Changed
 - Updated jsonoid-discovery dependency to v0.7.2
