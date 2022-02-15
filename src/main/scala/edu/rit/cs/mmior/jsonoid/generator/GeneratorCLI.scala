@@ -7,6 +7,10 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import scopt.OptionParser
 
+import edu.rit.cs.mmior.jsonoid.discovery.{
+  EquivalenceRelations,
+  ReferenceResolver
+}
 import edu.rit.cs.mmior.jsonoid.discovery.schemas.JsonSchema
 
 final case class Config(
@@ -42,9 +46,13 @@ object GeneratorCLI {
         val schema =
           parse(source.getLines().mkString("\n")).asInstanceOf[JObject]
         val jsonoidSchema = JsonSchema.fromJson(schema)
+        val resolvedSchema = ReferenceResolver.transformSchema(jsonoidSchema)(
+          EquivalenceRelations.NonEquivalenceRelation
+        )
 
         (1 to config.count).foreach { _ =>
-          val json = Generator.generateFromSchema(jsonoidSchema)
+          val json =
+            Generator.generateFromSchema(resolvedSchema)
           println(compact(render(json)))
         }
       case None =>

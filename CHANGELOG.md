@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support unique element generation in arrays
 - Generate values without specified type
 - Support `multipleOf` for `number` type
+- Supports schemas with references
 
 ### Changed
 - Updated jsonoid-discovery dependency to v0.7.0
