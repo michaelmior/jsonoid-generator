@@ -45,8 +45,14 @@ object Generator {
       case s: ObjectSchema  => ObjectGenerator.generate(s)
       case s: ProductSchema => ProductGenerator.generate(s)
       case s: ReferenceSchema =>
-        val refSchema = s.properties.get[ReferenceObjectProperty].schema
-        generateFromSchema(refSchema)
+        val ref = s.properties.getOrNone[ReferenceObjectProperty].map(_.schema)
+        ref match {
+          case Some(refSchema) => generateFromSchema(refSchema)
+          case None =>
+            throw new UnsupportedOperationException(
+              "unresolved reference found"
+            )
+        }
       case s: StringSchema => StringGenerator.generate(s)
       case s: AnySchema =>
         AnyGenerators(Random.nextInt(AnyGenerators.size))()

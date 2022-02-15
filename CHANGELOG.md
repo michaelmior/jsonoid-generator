@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support `multipleOf` for `number` type
 - Supports schemas with references
 - Support `patternProperties`
+- Partial `ReferenceSchema` support
 
 ### Changed
 - Updated jsonoid-discovery dependency to v0.7.2
