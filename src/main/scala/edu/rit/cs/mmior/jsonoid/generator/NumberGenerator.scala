@@ -18,13 +18,13 @@ object NumberGenerator extends Generator[NumberSchema, JDecimal] {
       .getOrElse(0.1)
 
     val minValue = schema.properties
-      .get[MinNumValueProperty]
-      .minNumValue
+      .getOrNone[MinNumValueProperty]
+      .flatMap(_.minNumValue)
       .map(_.doubleValue)
       .getOrElse(0.0)
     val maxValue = schema.properties
-      .get[MaxNumValueProperty]
-      .maxNumValue
+      .getOrNone[MaxNumValueProperty]
+      .flatMap(_.maxNumValue)
       .map(_.doubleValue)
       .getOrElse(minValue + 1000.0)
 
