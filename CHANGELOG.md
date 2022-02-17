@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Partial `ReferenceSchema` support
 
 ### Changed
-- Updated jsonoid-discovery dependency to v0.7.2
+- Updated jsonoid-discovery dependency to v0.7.3
 
 ### Fixed
 - Fix assembly task
