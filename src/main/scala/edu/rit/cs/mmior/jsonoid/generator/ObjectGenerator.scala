@@ -13,7 +13,7 @@ import com.github.curiousoddman.rgxgen.config.{RgxGenOption, RgxGenProperties}
 import org.json4s._
 
 object ObjectGenerator extends Generator[ObjectSchema, JObject] {
-  def generate(schema: ObjectSchema): JObject = {
+  def generate(schema: ObjectSchema, depth: Int): JObject = {
     val required =
       schema.properties.get[RequiredProperty].required.getOrElse(Set())
     val objectTypes = schema.properties.get[ObjectTypesProperty].objectTypes
@@ -21,17 +21,24 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
 
     // TODO: Make choice weighted based on FieldPresenceProperty
     val chosenKeys =
-      required ++ notRequired.filter(_ => util.Random.nextBoolean)
+      required ++ notRequired.filter(_ =>
+        util.Random.nextBoolean && depth <
+          Generator.MaxDepth
+      )
 
     val patternTypes = schema.properties
       .getOrNone[PatternTypesProperty]
       .map(_.patternTypes)
       .getOrElse(Map.empty)
-    val patternPropCount = if (patternTypes.isEmpty) {
-      0
-    } else {
-      util.Random.nextInt(10)
-    }
+    val patternPropCount =
+      if (
+        patternTypes.isEmpty || depth >=
+          Generator.MaxDepth
+      ) {
+        0
+      } else {
+        util.Random.nextInt(10)
+      }
     val patternProps = if (patternPropCount > 0) {
       (1 to patternPropCount).map { _ =>
         val prop = patternTypes.toSeq(util.Random.nextInt(patternTypes.size))
@@ -40,7 +47,7 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
         val generator = new RgxGen(prop._1.toString)
         generator.setProperties(genProps)
 
-        (generator.generate(), Generator.generateFromSchema(prop._2))
+        (generator.generate(), Generator.generateFromSchema(prop._2, depth + 1))
       }.toList
     } else {
       List()
@@ -48,7 +55,7 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
 
     JObject(
       chosenKeys
-        .map(k => (k, Generator.generateFromSchema(objectTypes(k))))
+        .map(k => (k, Generator.generateFromSchema(objectTypes(k), depth + 1)))
         .toList ++ patternProps
     )
   }

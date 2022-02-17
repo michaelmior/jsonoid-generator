@@ -17,7 +17,7 @@ import org.json4s._
 
 object StringGenerator extends Generator[StringSchema, JString] {
   @SuppressWarnings(Array("org.wartremover.warts.Equals"))
-  def generate(schema: StringSchema): JString = {
+  def generate(schema: StringSchema, depth: Int): JString = {
     val patternProp =
       schema.properties.getOrNone[PatternProperty].getOrElse(PatternProperty())
     val prefix = patternProp.prefix.getOrElse("")

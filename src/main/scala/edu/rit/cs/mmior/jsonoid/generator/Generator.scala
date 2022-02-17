@@ -21,41 +21,43 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 import org.json4s._
 
 trait Generator[S, T] {
-  def generate(schema: S): T
+  def generate(schema: S, depth: Int = 0): T
 }
 
 object Generator {
-  val AnyGenerators: List[Function0[JValue]] = List(
-    () => BooleanGenerator.generate(BooleanSchema()),
-    () => IntegerGenerator.generate(IntegerSchema()),
-    () => NullGenerator.generate(NullSchema()),
-    () => NumberGenerator.generate(NumberSchema()),
-    () => StringGenerator.generate(StringSchema())
+  val MaxDepth: Int = 10
+
+  val AnyGenerators: List[Function1[Int, JValue]] = List(
+    (depth) => BooleanGenerator.generate(BooleanSchema(), depth),
+    (depth) => IntegerGenerator.generate(IntegerSchema(), depth),
+    (depth) => NullGenerator.generate(NullSchema(), depth),
+    (depth) => NumberGenerator.generate(NumberSchema(), depth),
+    (depth) => StringGenerator.generate(StringSchema(), depth)
   )
 
   @SuppressWarnings(Array("org.wartremover.warts.Recursion"))
-  def generateFromSchema(schema: JsonSchema[_]): JValue = {
+  def generateFromSchema(schema: JsonSchema[_], depth: Int = 0): JValue = {
     schema match {
-      case s: ArraySchema   => ArrayGenerator.generate(s)
-      case s: BooleanSchema => BooleanGenerator.generate(s)
-      case s: EnumSchema    => EnumGenerator.generate(s)
-      case s: IntegerSchema => IntegerGenerator.generate(s)
-      case s: NullSchema    => NullGenerator.generate(s)
-      case s: NumberSchema  => NumberGenerator.generate(s)
-      case s: ObjectSchema  => ObjectGenerator.generate(s)
-      case s: ProductSchema => ProductGenerator.generate(s)
+      case s: ArraySchema   => ArrayGenerator.generate(s, depth)
+      case s: BooleanSchema => BooleanGenerator.generate(s, depth)
+      case s: EnumSchema    => EnumGenerator.generate(s, depth)
+      case s: IntegerSchema => IntegerGenerator.generate(s, depth)
+      case s: NullSchema    => NullGenerator.generate(s, depth)
+      case s: NumberSchema  => NumberGenerator.generate(s, depth)
+      case s: ObjectSchema  => ObjectGenerator.generate(s, depth)
+      case s: ProductSchema => ProductGenerator.generate(s, depth)
       case s: ReferenceSchema =>
         val ref = s.properties.getOrNone[ReferenceObjectProperty].map(_.schema)
         ref match {
-          case Some(refSchema) => generateFromSchema(refSchema)
+          case Some(refSchema) => generateFromSchema(refSchema, depth)
           case None =>
             throw new UnsupportedOperationException(
               "unresolved reference found"
             )
         }
-      case s: StringSchema => StringGenerator.generate(s)
+      case s: StringSchema => StringGenerator.generate(s, depth)
       case s: AnySchema =>
-        AnyGenerators(Random.nextInt(AnyGenerators.size))()
+        AnyGenerators(Random.nextInt(AnyGenerators.size))(depth)
     }
   }
 }

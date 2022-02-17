@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Supports schemas with references
 - Support `patternProperties`
 - Partial `ReferenceSchema` support
+- Limit maximum depth of generated objects
 
 ### Changed
 - Updated jsonoid-discovery dependency to v0.7.3

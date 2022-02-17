@@ -10,7 +10,7 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 import org.json4s._
 
 object NumberGenerator extends Generator[NumberSchema, JDecimal] {
-  def generate(schema: NumberSchema): JDecimal = {
+  def generate(schema: NumberSchema, depth: Int): JDecimal = {
     val multiple = schema.properties
       .getOrNone[NumMultipleOfProperty]
       .flatMap(_.multiple)

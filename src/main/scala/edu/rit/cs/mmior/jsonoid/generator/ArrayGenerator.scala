@@ -13,9 +13,10 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 import org.json4s._
 
 object ArrayGenerator extends Generator[ArraySchema, JArray] {
-  def generate(schema: ArraySchema): JArray = generate(schema, None)
+  def generate(schema: ArraySchema, depth: Int): JArray =
+    generate(schema, depth, None)
 
-  def generate(schema: ArraySchema, items: Option[Int]): JArray = {
+  def generate(schema: ArraySchema, depth: Int, items: Option[Int]): JArray = {
     val itemType = schema.properties.get[ItemTypeProperty].itemType
 
     itemType match {
@@ -54,17 +55,17 @@ object ArrayGenerator extends Generator[ArraySchema, JArray] {
         JArray(if (isUnique) {
           Stream
             .from(1)
-            .map(_ => Generator.generateFromSchema(itemSchema))
+            .map(_ => Generator.generateFromSchema(itemSchema, depth + 1))
             .distinct
             .take(numItems)
             .toList
         } else {
           (1 to numItems)
-            .map(_ => Generator.generateFromSchema(itemSchema))
+            .map(_ => Generator.generateFromSchema(itemSchema, depth + 1))
             .toList
         })
       case Right(schemas) =>
-        JArray(schemas.map(s => Generator.generateFromSchema(s)))
+        JArray(schemas.map(s => Generator.generateFromSchema(s, depth + 1)))
     }
   }
 }

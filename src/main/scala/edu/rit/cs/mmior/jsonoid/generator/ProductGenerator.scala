@@ -8,7 +8,7 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 import org.json4s._
 
 object ProductGenerator extends Generator[ProductSchema, JValue] {
-  def generate(schema: ProductSchema): JValue = {
+  def generate(schema: ProductSchema, depth: Int): JValue = {
     val schemaTypesProp =
       schema.properties.get[ProductSchemaTypesProperty]
     val schemaTypes = schemaTypesProp.schemaTypes
@@ -20,6 +20,6 @@ object ProductGenerator extends Generator[ProductSchema, JValue] {
     // TODO: Make choice weighted
     val chosenSchema = schemaTypes(util.Random.nextInt(schemaTypes.length))
 
-    Generator.generateFromSchema(chosenSchema)
+    Generator.generateFromSchema(chosenSchema, depth)
   }
 }

@@ -8,7 +8,7 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 import org.json4s._
 
 object EnumGenerator extends Generator[EnumSchema, JValue] {
-  def generate(schema: EnumSchema): JValue = {
+  def generate(schema: EnumSchema, depth: Int): JValue = {
     val values = schema.properties.get[EnumValuesProperty].values
 
     values.iterator.drop(util.Random.nextInt(values.size)).next
