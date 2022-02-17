@@ -77,15 +77,18 @@ object StringGenerator extends Generator[StringSchema, JString] {
       val format = formats.maxBy(_._2)._1
       val faker = new Faker()
       JString(format match {
-        case "date"                => randomDate("yyyy-MM-dd", faker)
-        case "date-time"           => randomDate("yyyy-MM-dd'T'HH:mm:ss+00:00", faker)
-        case "email" | "idn-email" => faker.internet.emailAddress
-        case "host" | "idn-host"   => faker.internet.domainName
-        case "ipv4"                => faker.internet.ipV4Address
-        case "ipv6"                => faker.internet.ipV6Address
-        case "time"                => randomDate("HH:mm:ss+00:00", faker)
-        case "uuid"                => faker.internet.uuid
-        case "uri" | "iri" | "uri-reference" | "iri-reference" =>
+        case "color"                          => faker.color.hex
+        case "date"                           => randomDate("yyyy-MM-dd", faker)
+        case "date-time"                      => randomDate("yyyy-MM-dd'T'HH:mm:ss+00:00", faker)
+        case "email" | "idn-email"            => faker.internet.emailAddress
+        case "host" | "hostname" | "idn-host" => faker.internet.domainName
+        case "ipv4"                           => faker.internet.ipV4Address
+        case "ipv6"                           => faker.internet.ipV6Address
+        case "text" =>
+          faker.lorem.characters(minLength, maxLength.getOrElse(minLength + 10))
+        case "time" => randomDate("HH:mm:ss+00:00", faker)
+        case "uuid" => faker.internet.uuid
+        case "uri" | "url" | "uri-reference" | "iri" | "iri-reference" =>
           "https://" + faker.internet.url
         case _ =>
           throw new UnsupportedOperationException("unsupported format")
