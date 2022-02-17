@@ -1,6 +1,7 @@
 package edu.rit.cs.mmior.jsonoid.generator
 
 import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
+  AnySchema,
   DependenciesProperty,
   ObjectSchema,
   ObjectTypesProperty,
@@ -55,7 +56,17 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
 
     JObject(
       chosenKeys
-        .map(k => (k, Generator.generateFromSchema(objectTypes(k), depth + 1)))
+        .map(k =>
+          (
+            k,
+            // We default to AnySchema here, although there's a good chance this
+            // is an error in the schema since an undefined property is required
+            Generator.generateFromSchema(
+              objectTypes.get(k).getOrElse(AnySchema()),
+              depth + 1
+            )
+          )
+        )
         .toList ++ patternProps
     )
   }
