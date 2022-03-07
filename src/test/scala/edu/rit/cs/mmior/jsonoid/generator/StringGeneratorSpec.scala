@@ -19,6 +19,7 @@ class StringGeneratorSpec extends UnitSpec {
     val props = SchemaProperties.empty[String]
     props.add(MinLengthProperty(Some(3)))
     props.add(MaxLengthProperty(Some(10)))
+    props.add(StringExamplesProperty(ExamplesProperty("foo")))
     props
   })
 
@@ -34,6 +35,11 @@ class StringGeneratorSpec extends UnitSpec {
     props.add(FormatProperty(Map(format -> 1)))
 
     StringSchema(props)
+  }
+
+  it should "generate using examples" in {
+    val str = StringGenerator.generate(stringSchema, 0, true).extract[String]
+    str shouldBe "foo"
   }
 
   it should "generate a valid string with length bounds" in {

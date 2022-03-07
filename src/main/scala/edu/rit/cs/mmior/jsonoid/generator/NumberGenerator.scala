@@ -3,6 +3,7 @@ package edu.rit.cs.mmior.jsonoid.generator
 import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   MaxNumValueProperty,
   MinNumValueProperty,
+  NumExamplesProperty,
   NumMultipleOfProperty,
   NumberSchema
 }
@@ -10,6 +11,20 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 import org.json4s._
 
 object NumberGenerator extends Generator[NumberSchema, JDecimal] {
+  def generate(
+      schema: NumberSchema,
+      depth: Int,
+      useExamples: Boolean
+  ): JDecimal = {
+    if (useExamples) {
+      val examples =
+        schema.properties.get[NumExamplesProperty].examples.examples
+      JDecimal(examples(util.Random.nextInt(examples.length)))
+    } else {
+      generate(schema, depth)
+    }
+  }
+
   def generate(schema: NumberSchema, depth: Int): JDecimal = {
     val multiple = schema.properties
       .getOrNone[NumMultipleOfProperty]

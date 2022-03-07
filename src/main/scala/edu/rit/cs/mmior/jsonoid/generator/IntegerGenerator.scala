@@ -3,6 +3,7 @@ package edu.rit.cs.mmior.jsonoid.generator
 import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   MaxIntValueProperty,
   MinIntValueProperty,
+  IntExamplesProperty,
   IntMultipleOfProperty,
   IntegerSchema
 }
@@ -10,6 +11,20 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 import org.json4s._
 
 object IntegerGenerator extends Generator[IntegerSchema, JInt] {
+  def generate(
+      schema: IntegerSchema,
+      depth: Int,
+      useExamples: Boolean
+  ): JInt = {
+    if (useExamples) {
+      val examples =
+        schema.properties.get[IntExamplesProperty].examples.examples
+      JInt(examples(util.Random.nextInt(examples.length)))
+    } else {
+      generate(schema, depth)
+    }
+  }
+
   def generate(schema: IntegerSchema, depth: Int): JInt = {
     val multiple = schema.properties
       .getOrNone[IntMultipleOfProperty]

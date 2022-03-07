@@ -6,6 +6,7 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   MinLengthProperty,
   PatternProperty,
   StaticPatternProperty,
+  StringExamplesProperty,
   StringSchema
 }
 
@@ -16,6 +17,20 @@ import java.text.SimpleDateFormat
 import org.json4s._
 
 object StringGenerator extends Generator[StringSchema, JString] {
+  def generate(
+      schema: StringSchema,
+      depth: Int,
+      useExamples: Boolean
+  ): JString = {
+    if (useExamples) {
+      val examples =
+        schema.properties.get[StringExamplesProperty].examples.examples
+      JString(examples(util.Random.nextInt(examples.length)))
+    } else {
+      generate(schema, depth)
+    }
+  }
+
   @SuppressWarnings(Array("org.wartremover.warts.Equals"))
   def generate(schema: StringSchema, depth: Int): JString = {
     val patternProp =

@@ -14,7 +14,11 @@ import com.github.curiousoddman.rgxgen.config.{RgxGenOption, RgxGenProperties}
 import org.json4s._
 
 object ObjectGenerator extends Generator[ObjectSchema, JObject] {
-  def generate(schema: ObjectSchema, depth: Int): JObject = {
+  def generate(
+      schema: ObjectSchema,
+      depth: Int,
+      useExamples: Boolean
+  ): JObject = {
     val required =
       schema.properties.get[RequiredProperty].required.getOrElse(Set())
     val objectTypes = schema.properties.get[ObjectTypesProperty].objectTypes
@@ -48,7 +52,10 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
         val generator = new RgxGen(prop._1.toString)
         generator.setProperties(genProps)
 
-        (generator.generate(), Generator.generateFromSchema(prop._2, depth + 1))
+        (
+          generator.generate(),
+          Generator.generateFromSchema(prop._2, depth + 1, useExamples)
+        )
       }.toList
     } else {
       List()
@@ -63,7 +70,8 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
             // is an error in the schema since an undefined property is required
             Generator.generateFromSchema(
               objectTypes.get(k).getOrElse(AnySchema()),
-              depth + 1
+              depth + 1,
+              useExamples
             )
           )
         )

@@ -11,6 +11,12 @@ class IntegerGeneratorSpec extends UnitSpec {
   private val numberSchema =
     IntegerSchema(2).merge(IntegerSchema(100)).asInstanceOf[IntegerSchema]
 
+  it should "generate using examples" in {
+    val num = IntegerGenerator.generate(numberSchema, 0, true).num.toInt
+
+    num should (be(2) or be(100))
+  }
+
   it should "generate a number in range" in {
     val cp = new Checkpoint()
 

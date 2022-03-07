@@ -52,7 +52,7 @@ class ArrayGeneratorSpec extends UnitSpec {
     val enumArraySchema = ArraySchema(List(enumSchema))
     enumArraySchema.properties.add(UniqueProperty(true, false))
 
-    val arr = ArrayGenerator.generate(enumArraySchema, Some(10))
+    val arr = ArrayGenerator.generate(enumArraySchema, 0, false, Some(10))
     arr.arr.length should be <= 1
   }
 
