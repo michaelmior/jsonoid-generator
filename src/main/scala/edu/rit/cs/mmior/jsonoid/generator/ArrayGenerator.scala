@@ -13,7 +13,7 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 import org.json4s._
 
 object ArrayGenerator extends Generator[ArraySchema, JArray] {
-  def generate(schema: ArraySchema, depth: Int, useExamples: Boolean): JArray =
+  def generate(schema: ArraySchema, useExamples: Boolean, depth: Int): JArray =
     generate(schema, depth, useExamples, None)
 
   def generate(
@@ -61,7 +61,7 @@ object ArrayGenerator extends Generator[ArraySchema, JArray] {
           Stream
             .from(1)
             .map(_ =>
-              Generator.generateFromSchema(itemSchema, depth + 1, useExamples)
+              Generator.generateFromSchema(itemSchema, useExamples, depth + 1)
             )
             .distinct
             .take(numItems)
@@ -69,14 +69,14 @@ object ArrayGenerator extends Generator[ArraySchema, JArray] {
         } else {
           (1 to numItems)
             .map(_ =>
-              Generator.generateFromSchema(itemSchema, depth + 1, useExamples)
+              Generator.generateFromSchema(itemSchema, useExamples, depth + 1)
             )
             .toList
         })
       case Right(schemas) =>
         JArray(
           schemas.map(s =>
-            Generator.generateFromSchema(s, depth + 1, useExamples)
+            Generator.generateFromSchema(s, useExamples, depth + 1)
           )
         )
     }

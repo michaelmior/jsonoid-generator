@@ -19,8 +19,8 @@ import org.json4s._
 object StringGenerator extends Generator[StringSchema, JString] {
   def generate(
       schema: StringSchema,
-      depth: Int,
-      useExamples: Boolean
+      useExamples: Boolean,
+      depth: Int
   ): JString = {
     if (useExamples) {
       val examples =

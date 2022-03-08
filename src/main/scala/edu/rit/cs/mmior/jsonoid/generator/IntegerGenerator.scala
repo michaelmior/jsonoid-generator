@@ -13,8 +13,8 @@ import org.json4s._
 object IntegerGenerator extends Generator[IntegerSchema, JInt] {
   def generate(
       schema: IntegerSchema,
-      depth: Int,
-      useExamples: Boolean
+      useExamples: Boolean,
+      depth: Int
   ): JInt = {
     if (useExamples) {
       val examples =

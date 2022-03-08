@@ -38,7 +38,7 @@ class StringGeneratorSpec extends UnitSpec {
   }
 
   it should "generate using examples" in {
-    val str = StringGenerator.generate(stringSchema, 0, true).extract[String]
+    val str = StringGenerator.generate(stringSchema, true).extract[String]
     str shouldBe "foo"
   }
 

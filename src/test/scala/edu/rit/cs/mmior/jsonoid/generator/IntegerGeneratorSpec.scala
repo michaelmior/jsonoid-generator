@@ -12,7 +12,7 @@ class IntegerGeneratorSpec extends UnitSpec {
     IntegerSchema(2).merge(IntegerSchema(100)).asInstanceOf[IntegerSchema]
 
   it should "generate using examples" in {
-    val num = IntegerGenerator.generate(numberSchema, 0, true).num.toInt
+    val num = IntegerGenerator.generate(numberSchema, true).num.toInt
 
     num should (be(2) or be(100))
   }

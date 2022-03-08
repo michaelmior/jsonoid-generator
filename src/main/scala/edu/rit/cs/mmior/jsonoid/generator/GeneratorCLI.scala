@@ -15,7 +15,8 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.JsonSchema
 
 final case class Config(
     input: Option[File] = None,
-    count: Int = 1
+    count: Int = 1,
+    examples: Boolean = false
 )
 
 object GeneratorCLI {
@@ -35,6 +36,11 @@ object GeneratorCLI {
         .optional()
         .action((x, c) => c.copy(count = x))
         .text("the number of JSON documents to generate")
+
+      opt[Boolean]('e', "examples")
+        .optional()
+        .action((x, c) => c.copy(examples = x))
+        .text("generate values only from examples")
     }
 
     parser.parse(args, Config()) match {

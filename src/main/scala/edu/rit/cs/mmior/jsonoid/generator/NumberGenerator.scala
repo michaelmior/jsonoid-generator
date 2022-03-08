@@ -13,8 +13,8 @@ import org.json4s._
 object NumberGenerator extends Generator[NumberSchema, JDecimal] {
   def generate(
       schema: NumberSchema,
-      depth: Int,
-      useExamples: Boolean
+      useExamples: Boolean,
+      depth: Int
   ): JDecimal = {
     if (useExamples) {
       val examples =

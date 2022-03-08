@@ -16,8 +16,8 @@ import org.json4s._
 object ObjectGenerator extends Generator[ObjectSchema, JObject] {
   def generate(
       schema: ObjectSchema,
-      depth: Int,
-      useExamples: Boolean
+      useExamples: Boolean,
+      depth: Int
   ): JObject = {
     val required =
       schema.properties.get[RequiredProperty].required.getOrElse(Set())
@@ -54,7 +54,7 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
 
         (
           generator.generate(),
-          Generator.generateFromSchema(prop._2, depth + 1, useExamples)
+          Generator.generateFromSchema(prop._2, useExamples, depth + 1)
         )
       }.toList
     } else {
@@ -70,8 +70,8 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
             // is an error in the schema since an undefined property is required
             Generator.generateFromSchema(
               objectTypes.get(k).getOrElse(AnySchema()),
-              depth + 1,
-              useExamples
+              useExamples,
+              depth + 1
             )
           )
         )
