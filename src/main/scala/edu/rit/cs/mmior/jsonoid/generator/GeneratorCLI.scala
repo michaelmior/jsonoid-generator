@@ -37,9 +37,9 @@ object GeneratorCLI {
         .action((x, c) => c.copy(count = x))
         .text("the number of JSON documents to generate")
 
-      opt[Boolean]('e', "examples")
+      opt[Unit]('e', "examples")
         .optional()
-        .action((x, c) => c.copy(examples = x))
+        .action((_, c) => c.copy(examples = true))
         .text("generate values only from examples")
     }
 
