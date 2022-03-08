@@ -58,7 +58,7 @@ object GeneratorCLI {
 
         (1 to config.count).foreach { _ =>
           val json =
-            Generator.generateFromSchema(resolvedSchema)
+            Generator.generateFromSchema(resolvedSchema, config.examples)
           println(compact(render(json)))
         }
       case None =>

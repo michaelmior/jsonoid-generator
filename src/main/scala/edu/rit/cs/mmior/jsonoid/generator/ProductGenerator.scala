@@ -1,6 +1,7 @@
 package edu.rit.cs.mmior.jsonoid.generator
 
 import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
+  AllOf,
   ProductSchema,
   ProductSchemaTypesProperty
 }
@@ -8,6 +9,7 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
 import org.json4s._
 
 object ProductGenerator extends Generator[ProductSchema, JValue] {
+  @SuppressWarnings(Array("org.wartremover.warts.Equals"))
   def generate(
       schema: ProductSchema,
       useExamples: Boolean,
@@ -17,7 +19,7 @@ object ProductGenerator extends Generator[ProductSchema, JValue] {
       schema.properties.get[ProductSchemaTypesProperty]
     val schemaTypes = schemaTypesProp.schemaTypes
 
-    if (schemaTypesProp.all) {
+    if (schemaTypesProp.productType == AllOf) {
       throw new UnsupportedOperationException("allOf is not supported")
     }
 
