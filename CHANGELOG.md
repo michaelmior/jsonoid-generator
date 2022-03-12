@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Partial `ReferenceSchema` support
 - Limit maximum depth of generated objects
 - Setting to generate values only from examples
+- Allow restriction of properties used in generation
 
 ### Changed
 - Updated jsonoid-discovery dependency to v0.7.3

@@ -16,7 +16,8 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.JsonSchema
 final case class Config(
     input: Option[File] = None,
     count: Int = 1,
-    examples: Boolean = false
+    examples: Boolean = false,
+    input_properties: Option[Seq[String]] = None
 )
 
 object GeneratorCLI {
@@ -41,6 +42,11 @@ object GeneratorCLI {
         .optional()
         .action((_, c) => c.copy(examples = true))
         .text("generate values only from examples")
+
+      opt[Seq[String]]('p', "properties")
+        .optional()
+        .action((x, c) => c.copy(input_properties = Some(x)))
+        .text("use only specified properties")
     }
 
     parser.parse(args, Config()) match {
@@ -56,9 +62,15 @@ object GeneratorCLI {
           EquivalenceRelations.NonEquivalenceRelation
         )
 
+        // Limit to only the desired properties
+        val finalSchema = config.input_properties match {
+          case Some(props) => resolvedSchema.onlyPropertiesNamed(props)
+          case None => resolvedSchema
+        }
+
         (1 to config.count).foreach { _ =>
           val json =
-            Generator.generateFromSchema(resolvedSchema, config.examples)
+            Generator.generateFromSchema(finalSchema, config.examples)
           println(compact(render(json)))
         }
       case None =>
