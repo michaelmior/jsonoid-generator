@@ -20,7 +20,10 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
       depth: Int
   ): JObject = {
     val required =
-      schema.properties.get[RequiredProperty].required.getOrElse(Set())
+      schema.properties
+        .getOrNone[RequiredProperty]
+        .flatMap(_.required)
+        .getOrElse(Set())
     val objectTypes = schema.properties.get[ObjectTypesProperty].objectTypes
     val notRequired = objectTypes.keySet -- required
 

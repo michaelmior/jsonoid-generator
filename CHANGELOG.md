@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Handle cases of missing properties
 - Strings are now properly generated
 - Stop infinite loop with unique arrays of enums
+- Make required property optional
 
 ## [0.0.1]
 ### Added
