@@ -2,11 +2,11 @@ package edu.rit.cs.mmior.jsonoid.generator
 
 import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   AnySchema,
-  DependenciesProperty,
   ObjectSchema,
   ObjectTypesProperty,
   PatternTypesProperty,
-  RequiredProperty
+  RequiredProperty,
+  StaticDependenciesProperty
 }
 
 import com.github.curiousoddman.rgxgen.RgxGen
@@ -64,8 +64,14 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
       List()
     }
 
+    // XXX Only supports StaticDependenciesProperty, not DependenciesProperty
+    //     but this should be fine since this is the property we read in when
+    //     processing files via the CLI
+    val dependencies = schema.properties.getOrNone[StaticDependenciesProperty].map(_.dependencies).getOrElse(Map.empty)
+    val chosenKeysWithDeps = chosenKeys ++ chosenKeys.flatMap(dependencies.getOrElse(_, List()))
+
     JObject(
-      chosenKeys
+      chosenKeysWithDeps
         .map(k =>
           (
             k,
