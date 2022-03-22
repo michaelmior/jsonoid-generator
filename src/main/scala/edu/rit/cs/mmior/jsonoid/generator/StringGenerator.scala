@@ -10,8 +10,6 @@ import edu.rit.cs.mmior.jsonoid.discovery.schemas.{
   StringSchema
 }
 
-import com.github.curiousoddman.rgxgen.RgxGen
-import com.github.curiousoddman.rgxgen.config.{RgxGenOption, RgxGenProperties}
 import com.github.javafaker.Faker
 import java.text.SimpleDateFormat
 import org.json4s._
@@ -38,8 +36,7 @@ object StringGenerator extends Generator[StringSchema, JString] {
     val prefix = patternProp.prefix.getOrElse("")
     val suffix = patternProp.suffix.getOrElse("")
 
-    val regex =
-      schema.properties.getOrNone[StaticPatternProperty].map(_.regex)
+    val regex = schema.properties.getOrNone[StaticPatternProperty].map(_.regex)
 
     if ((!prefix.isEmpty || !suffix.isEmpty) && !regex.isEmpty) {
       throw new UnsupportedOperationException(
@@ -66,18 +63,27 @@ object StringGenerator extends Generator[StringSchema, JString] {
     if (formats.isEmpty) {
       regex match {
         case Some(regexObj) =>
-          val genProps = new RgxGenProperties()
-          RgxGenOption.INFINITE_PATTERN_REPETITION.setInProperties(genProps, 5)
-          val generator = new RgxGen(regexObj.toString)
-          generator.setProperties(genProps)
-
-          if (minLength == 0 && maxLength.isEmpty) {
-            JString(generator.generate())
+          val regexStr = regexObj.toString
+          val (prefix, suffix) = if (regexStr.contains(".*")) {
+            regexStr.stripPrefix("^").stripSuffix("$").split("\\.\\*") match {
+              case Array(prefix, suffix) => (prefix, suffix)
+              case _ =>
+                throw new UnsupportedOperationException("regex unsupported")
+            }
+          } else if (regexStr.startsWith("^")) {
+            (regexStr.stripPrefix("^"), "")
+          } else if (regexStr.endsWith("$")) {
+            ("", regexStr.stripSuffix("$"))
           } else {
-            throw new UnsupportedOperationException(
-              "regexes not supported with length constraints"
-            )
+            throw new UnsupportedOperationException("regex unsupported")
           }
+
+          val minGenLength = (minLength - prefix.length - suffix.length).max(0)
+          val maxGenLength = (maxLength.getOrElse(50) - prefix.length - suffix.length).max(0)
+          val maxRand = maxGenLength - minGenLength + 1;
+          val genLength = minGenLength + (Math.log(1 + util.Random.nextDouble) * maxRand).toInt
+          val str = prefix + util.Random.alphanumeric.take(genLength).mkString("") + suffix
+          JString(str)
         case None =>
           // Pick a length for the random part of the string
           // and build the string including prefix and suffix

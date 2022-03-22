@@ -23,7 +23,7 @@ class StringGeneratorSpec extends UnitSpec {
     props
   })
 
-  private val schemaRegex = "[0-9A-Z]+".r
+  private val schemaRegex = "^foo.*bar$".r
   private val regexStringSchema = StringSchema({
     val props = SchemaProperties.empty[String]
     props.add(StaticPatternProperty(schemaRegex))
