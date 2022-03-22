@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow restriction of properties used in generation
 - Support for `StaticDependenciesProperty`
 - Schema validation via CLI
+- Allow restricting generation to (in)valid documents
 
 ### Changed
 - Updated jsonoid-discovery dependency to v0.7.3
