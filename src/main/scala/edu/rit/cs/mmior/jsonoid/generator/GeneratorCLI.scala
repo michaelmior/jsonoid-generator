@@ -20,7 +20,8 @@ final case class Config(
     examples: Boolean = false,
     input_properties: Option[Seq[String]] = None,
     validator_properties: Option[Seq[String]] = None,
-    validator_valid: Option[Boolean] = None
+    validator_valid: Option[Boolean] = None,
+    seed: Option[Int] = None
 )
 
 object GeneratorCLI {
@@ -85,6 +86,11 @@ object GeneratorCLI {
         .optional()
         .action((x, c) => c.copy(validator_valid = Some(x)))
         .text("only produce schemas which are (or are not) valid against the validator schema")
+
+      opt[Int]('s', "seed")
+        .optional()
+        .action((x, c) => c.copy(seed = Some(x)))
+        .text("random number seed")
     }
 
     parser.parse(args, Config()) match {
@@ -100,6 +106,11 @@ object GeneratorCLI {
               convertSchema(Source.fromFile(file), config.validator_properties)
             )
           case None => None
+        }
+
+        // Set the seed for the RNG
+        if (config.seed.isDefined) {
+          util.Random.setSeed(config.seed.get)
         }
 
         var passedSchemas = 0
