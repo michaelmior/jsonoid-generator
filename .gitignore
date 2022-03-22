@@ -3,3 +3,5 @@
 logs/
 target/
 .env
+*.csv
+*.json
