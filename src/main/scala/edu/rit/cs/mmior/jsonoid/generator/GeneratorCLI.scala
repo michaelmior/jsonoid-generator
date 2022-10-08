@@ -44,8 +44,9 @@ object GeneratorCLI {
   }
 
   // $COVERAGE-OFF$ No automated testing of CLI
-  @SuppressWarnings(Array("org.wartremover.warts.Equals",
-                          "org.wartremover.warts.While"))
+  @SuppressWarnings(
+    Array("org.wartremover.warts.Equals", "org.wartremover.warts.While")
+  )
   def main(args: Array[String]): Unit = {
     val parser = new OptionParser[Config]("jsonoid-generator") {
       head("jsonoid-generator", BuildInfo.version)
@@ -85,7 +86,9 @@ object GeneratorCLI {
       opt[Boolean]('t', "validator-valid")
         .optional()
         .action((x, c) => c.copy(validator_valid = Some(x)))
-        .text("only produce schemas which are (or are not) valid against the validator schema")
+        .text(
+          "only produce schemas which are (or are not) valid against the validator schema"
+        )
 
       opt[Int]('s', "seed")
         .optional()
@@ -119,7 +122,11 @@ object GeneratorCLI {
           var json =
             Generator.generateFromSchema(inputSchema, config.examples)
           if (config.validator_valid.isDefined) {
-            while (validatorSchema.get.isAnomalous(json) == config.validator_valid.get) {
+            while (
+              validatorSchema.get.isAnomalous(
+                json
+              ) == config.validator_valid.get
+            ) {
               json = Generator.generateFromSchema(inputSchema, config.examples)
               System.err.println(validatorSchema.get.collectAnomalies(json))
             }

@@ -67,8 +67,12 @@ object ObjectGenerator extends Generator[ObjectSchema, JObject] {
     // XXX Only supports StaticDependenciesProperty, not DependenciesProperty
     //     but this should be fine since this is the property we read in when
     //     processing files via the CLI
-    val dependencies = schema.properties.getOrNone[StaticDependenciesProperty].map(_.dependencies).getOrElse(Map.empty)
-    val chosenKeysWithDeps = chosenKeys ++ chosenKeys.flatMap(dependencies.getOrElse(_, List()))
+    val dependencies = schema.properties
+      .getOrNone[StaticDependenciesProperty]
+      .map(_.dependencies)
+      .getOrElse(Map.empty)
+    val chosenKeysWithDeps =
+      chosenKeys ++ chosenKeys.flatMap(dependencies.getOrElse(_, List()))
 
     JObject(
       chosenKeysWithDeps

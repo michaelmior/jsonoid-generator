@@ -79,10 +79,15 @@ object StringGenerator extends Generator[StringSchema, JString] {
           }
 
           val minGenLength = (minLength - prefix.length - suffix.length).max(0)
-          val maxGenLength = (maxLength.getOrElse(50) - prefix.length - suffix.length).max(0)
+          val maxGenLength =
+            (maxLength.getOrElse(50) - prefix.length - suffix.length).max(0)
           val maxRand = maxGenLength - minGenLength + 1;
-          val genLength = minGenLength + (Math.log(1 + util.Random.nextDouble) * maxRand).toInt
-          val str = prefix + util.Random.alphanumeric.take(genLength).mkString("") + suffix
+          val genLength = minGenLength + (Math.log(
+            1 + util.Random.nextDouble
+          ) * maxRand).toInt
+          val str = prefix + util.Random.alphanumeric
+            .take(genLength)
+            .mkString("") + suffix
           JString(str)
         case None =>
           // Pick a length for the random part of the string
